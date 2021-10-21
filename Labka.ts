@@ -5,16 +5,16 @@ abstract class Animal
 
 interface IVisitor
 {
-    Make(cat: Cat): void;
-    Make(dog: Dog): void;
-    Make(bird: Bird): void;
+    visitCat(cat: Cat): void;
+    visitDog(dog: Dog): void;
+    visitBird(bird: Bird): void;
 }
 
 class Cat implements Animal
 {
     public Accept(visitor: IVisitor):void
     {
-        visitor.Make(this)
+        visitor.visitCat(this)
     }
 }
 
@@ -22,7 +22,7 @@ class Dog implements Animal
 {
     public Accept(visitor: IVisitor): void
     {
-        visitor.Make(this);
+        visitor.visitDog(this);
     }
 }
 
@@ -30,45 +30,33 @@ class Bird implements Animal
 {
     public Accept(visitor: IVisitor): void
     {
-        visitor.Make(this);
+        visitor.visitBird(this);
     }
 }
 
 class VoiceVisitor implements IVisitor
 {
-    public Make(param: Cat | Dog | Bird)
-    {
-        if(param instanceof Cat)
-        {
-            console.log("Мяу");
-        }
-        if(param instanceof Dog)
-        {
-            console.log("Гав");
-        }
-        if(param instanceof Bird)
-        {
-            console.log("Чирик-Чирик");
-        }
+    public visitCat(cat:Cat){
+        console.log("Мяу");
+    }
+    public visitDog(dog:Dog){
+        console.log("Гав");
+    }
+    public visitBird(bird:Bird){
+        console.log("Чирик-чирик");
     }
 }
 
 class MoveVisitor implements IVisitor
 {
-    public Make(param: Cat | Dog | Bird)
-    {
-        if(param instanceof Cat)
-        {
-            console.log("Крадётся");
-        }
-        if(param instanceof Dog)
-        {
-            console.log("Побежала");
-        }
-        if(param instanceof Bird)
-        {
-            console.log("Полетела");
-        }
+    public visitCat(cat:Cat){
+        console.log("Крадётся");
+    }
+    public visitDog(dog:Dog){
+        console.log("Побежала");
+    }
+    public visitBird(bird:Bird){
+        console.log("Полетела");
     }
 }
 
@@ -76,44 +64,39 @@ class Kiwi implements Bird
 {
     public Accept(visitor: IVisitor): void
     {
-        visitor.Make(this);
+        visitor.visitBird(this);
     }
 }
 
 class UpdateVoiceVisitor extends VoiceVisitor
 {
-    public Make(bird: Bird): void
+    public visitBird(bird: Bird): void
     {
         if(bird instanceof Kiwi)
         {
             console.log("Киви что-то там...")
         }
-        else super.Make(bird);
+        else super.visitBird(bird);
     }
 }
 
-let dog = new Dog();
-let cat = new Cat();
-let bird = new Bird();
+
+var animals:Array<Animal> = [new Cat, new Dog, new Bird];
 
 let voice = new VoiceVisitor();
 let move = new MoveVisitor();
 
-dog.Accept(voice);
-cat.Accept(voice);
-bird.Accept(voice);
-
-dog.Accept(move);
-cat.Accept(move);
-bird.Accept(move);
+for (var i in animals)
+{
+    console.log(animals[i].Accept(voice))
+    console.log(animals[i].Accept(move))
+}
 
 console.log("\nupdateVoiceVisitor\n");
+animals.push(new Kiwi)
 
 let updateVoiceVisitor = new UpdateVoiceVisitor();
-let kiwi = new Kiwi();
-
-kiwi.Accept(updateVoiceVisitor);
-
-dog.Accept(updateVoiceVisitor);
-cat.Accept(updateVoiceVisitor);
-bird.Accept(updateVoiceVisitor);
+for (var i in animals)
+{
+    console.log(animals[i].Accept(updateVoiceVisitor))
+}
